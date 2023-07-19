@@ -22,6 +22,9 @@ const userSchema = new mongoose.Schema({
         type : String,
         required : true,
     },
+    jwt : {
+        type : String,
+    },
     avatar : {
         type : Buffer,
     }

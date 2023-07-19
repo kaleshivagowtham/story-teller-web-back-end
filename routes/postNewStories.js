@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const Story = require('../models/story');
+const authenticateToken = require('../middleware/auth');
 
 router.post('/newstory', (req , res) => {
     const {writerId , title, paras , titleImg} = req.body.newStory;
@@ -45,6 +46,11 @@ router.post('/mystories' , (req , res) => {
         else
             return res.status(422).json("No author Found!");
     })
+})
+
+router.post('/newpost', authenticateToken , (req , res ) => {
+    console.log('post called');
+    return res.status(200).json("Post called");
 })
 
 module.exports = router;
