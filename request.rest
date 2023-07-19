@@ -1,0 +1,68 @@
+
+POST http://localhost:5000/signup
+Content-Type: application/json
+
+{
+    "regDetails" : {
+    "fName" : "Shiva",
+    "mName" : "Gowtham",
+    "lName" : "Kale",
+    "email" : "ab",
+    "password" : "ef",
+    "userName" : "cd"
+}}
+
+###
+
+POST http://localhost:5000/signin
+Content-Type: application/json
+
+{
+    "username" : "abcdef@gmail.com",
+    "password" : "123456789"
+}
+
+###
+
+POST http://localhost:5000/newstory
+Content-Type: application/json
+
+{
+    "newStory" : 
+    {
+        "writerId" : "shivakale",
+        "title" : "Lorem Ipsuma",
+        "paras" : ["para1" , "para2" , "para3"],
+        "titleImg" : ""
+    }
+}
+
+###
+
+POST http://localhost:5000/authors
+Content-Type: application/json
+
+{
+    "searchText" : "shivakale"
+}
+
+###
+
+POST http://localhost:5000/mystories
+Content-Type: application/json
+
+{
+    "writerId" : "shivakale"
+}
+
+###
+POST http://localhost:5000/newpost
+Authorization : Bearer eyJhbGciOiJIUzI1NiJ9.YWJjZGVmQGdtYWlsLmNvbQ.7jrbOKhCqdYvRqiGWEaluFk70_92LL6gELOdeZJUxME
+
+###
+POST http://localhost:5000/profileinfo
+Content-Type: application/json
+
+{
+    "profileInfo" : "shivakale123"
+}
