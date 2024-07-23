@@ -25,16 +25,20 @@ mongoose.connection.on('error' , (err) => {
 
 app.use(express.json());
 app.use(require('./routes/authentication'));
+app.use(require('./routes/stories'));
 app.use(require('./routes/postNewStories'));
 app.use(require('./routes/authors'));
 app.use(require('./routes/profile'));
 app.use(require('./routes/getprofile'));
+app.use(require('./routes/viewstory'));
+app.use(require('./routes/chapters'));
+app.use(require('./routes/search'));
+app.use(require('./routes/comments'));
 
 app.get('/' , (req , res) => {
     console.log("Home content");
     res.send("Hello world");
 })
-
 
 app.listen( PORT , () => {
     console.log(`Server started on PORT: ${PORT}...`);
