@@ -1,27 +1,45 @@
 const jwt = require('jsonwebtoken');
-const {JWT_SECRET} = require('../keys');
 
 const mongoose = require('mongoose');
-const User = mongoose.model("User");
+const User = require('../models/user')
+require('dotenv').config();
 
-module.exports = (req,req,next) => {
+module.exports = (req, res, next) => {
 
-    const {authorization} = req.headers;
+    try {
+        const authorization = JSON.parse(req.headers.authorization);
 
-    if(!authorization)
-        return res.status(401).json("You must be logged in");
+        if (!authorization)
+            return res.status(200).json({ authorized: false })
 
-    const token = authorization.replace("Bearer ", "");
-    jwt.verify(token,JWT_SECRET,(err , payload) => {
-
-        if(err)
-            return res.status().json("You must be logged in");
-
-        const {_id} = payload;
-        User.findById({_id})
-            .then( userdata => {
-                req.user = userdata
-                next()
+        if(authorization) {
+            jwt.verify( authorization, process.env.ACCESS_TOKEN_SECRET, async (err, data) => {
+                if (err) {
+                    return res.status(200).json({ authorized: false, err : err })
+                } else {
+                    await User.find({
+                        $or : [
+                            {email : data},
+                            {username : data}
+                        ]
+                    })
+                    .then (user => {
+                        if (user) {
+                            // console.log(user)
+                            req.user = user[0];
+                            next();
+                        }
+                        else 
+                            return res.status(200).json({ "message" : "You are not authorized to take the action" })
+                    })
+                    .catch(err => {
+                        return res.status(200).json({message : err.message});
+                    })
+                }
             })
-    })
+        }
+    }
+    catch(err) {
+        return res.status(200).json({"error Here" : err});
+    }
 }

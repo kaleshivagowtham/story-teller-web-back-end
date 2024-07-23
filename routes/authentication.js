@@ -3,34 +3,37 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const auth = require('../middleware/checkLogin')
 require("dotenv").config();
 
 router.use(express.json());
 
-router.post('/checklogin' , (req,res) => {
-    const {jwt_auth_token} = req.body;
-    // console.log('jwt_auth_token : ',jwt_auth_token);
-    console.log('data : ',jwt_auth_token);
-    User.findOne({jwt : jwt_auth_token})
-    .then(savedUser => {
-        console.log("savedUser : ",savedUser);
-        if(savedUser)
-            return res.status(200).json({response : 'loggedIn',username : savedUser.username});
-        else
-            return res.status(200).json({response : 'notLoggedIn'});
-    })
+router.get('/checkLogin', auth , (req,res) => {
+
+    try{
+        if(req.user)
+            return res.status(200).json({'message' : 'loggedIn', username : req.user.username});
+        return res.status(200).json({'message' : 'Login failed'});
+    }
+    catch (error) {
+        console.log(error.message);
+    }
 })
 
 router.post('/signup' , (req , res) => {
-    // console.log('details : ',req.body.regDetails);
     const {email,password,fName , mName,lName,username} = req.body.regDetails;
+    console.log(email);
+    console.log(mName);
+    console.log(username);
+    console.log(lName);
+    console.log(password);
     if((!email && !username) || !fName || !password )
         return res.status(442).json("Please enter all the important details");
     User.findOne({email : email})
         .then(savedUser => {
             if(savedUser)
                 return res.status(422).json("The user already exists");
-            const accessToken = jwt.sign(username , `${process.env.ACCESS_TOKEN_SECRET}`);
+            const accessToken = jwt.sign(email , `${process.env.ACCESS_TOKEN_SECRET}`);
             // console.log('signup Token :', accessToken);
             const user = new User({
                 fName : fName,
@@ -56,17 +59,33 @@ router.post('/signin' , (req , res) => {
     if(!clientUsername || !clientPassword)
         return res.status(422).json("Please enter an email or password");
 
-    User.findOne({email :clientUsername , password : clientPassword})
+    // console.log("disp: ", clientPassword, clientUsername)
+    User.findOne({ $or : [
+            {email :clientUsername} , 
+            {username : clientUsername}
+    ],
+            password : clientPassword
+        })
         .then((savedUser) => {
             if(savedUser){
                 const accessToken = jwt.sign(clientUsername , `${process.env.ACCESS_TOKEN_SECRET}`);
-                // console.log(accessToken);
-                savedUser.replaceOne({jwt : accessToken})
-                .then(done => console.log("done : ",done))
-                .catch(err => console.log("Replacing jwt failed"));
-                return res.status(200).json({accessToken : accessToken , loginSuccessFul : 'Login successful'});
+                if(!accessToken)
+                    return res.status(200).json({"message" : "Unable to login at the moment"})
+                // console.log("Token: ",accessToken);
+
+                savedUser.updateOne({jwt : accessToken})
+                .then(done => 
+                    console.log("done : ",done)
+                )
+                .catch(err => 
+                    console.log("Replacing jwt failed")
+                );
+                return res.status(200).json({accessToken : accessToken , username : savedUser.username, loginSuccessFul : 'Login successful'});
             }
-            return res.status(422).json("username or password incorrect");
+            return res.status(200).json("username or password incorrect");
+        })
+        .catch(err => {
+            return res.status(200).json({"message" : err.message})
         })
 })
 

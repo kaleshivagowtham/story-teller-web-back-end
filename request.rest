@@ -1,15 +1,31 @@
+GET http://localhost:5000/trending
+Content-Type: application/json
 
+{
+
+}
+
+###
+
+POST http://localhost:5000/search
+Content-Type: application/json
+
+{
+    "searchText" : "new"
+}
+
+###
 POST http://localhost:5000/signup
 Content-Type: application/json
 
 {
     "regDetails" : {
-    "fName" : "Shiva",
-    "mName" : "Gowtham",
-    "lName" : "Kale",
-    "email" : "ab",
-    "password" : "ef",
-    "userName" : "cd"
+    "fName" : "abc",
+    "mName" : "def",
+    "lName" : "ghi",
+    "email" : "2@gmail.com",
+    "password" : "2",
+    "username" : "2"
 }}
 
 ###
@@ -18,23 +34,76 @@ POST http://localhost:5000/signin
 Content-Type: application/json
 
 {
-    "username" : "abcdef@gmail.com",
-    "password" : "123456789"
+    "username" : "1@gmail.com",
+    "password" : "1"
 }
 
 ###
 
 POST http://localhost:5000/newstory
 Content-Type: application/json
+Authorization : "eyJhbGciOiJIUzI1NiJ9.MUBnbWFpbC5jb20.o6oCmKs_kJ-syuFJIK0teQ23X3CcVc03XwyHnm0w8wM"
 
 {
     "newStory" : 
     {
-        "writerId" : "shivakale",
-        "title" : "Lorem Ipsuma",
-        "paras" : ["para1" , "para2" , "para3"],
-        "titleImg" : ""
+        "writerId" : "1",
+        "title" : "Lorem Ipsuma 4",
+        "paras" : "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+        "titleImg" : "abc",
+        "tags" : ["war", "sific"]
     }
+}
+
+###
+
+POST http://localhost:5000/newChapter
+Content-Type: application/json
+Authorization : "eyJhbGciOiJIUzI1NiJ9.MUBnbWFpbC5jb20.o6oCmKs_kJ-syuFJIK0teQ23X3CcVc03XwyHnm0w8wM"
+
+{
+    "newStory" : {
+        "writerId" : "1",
+        "storyTitle" : "Lorem Ipsuma 4",
+        "title" : "Chapter 4",
+        "paras" : [{"type" : "text", "content" : "Para 1"}],
+        "chapterNumber" : "4"
+    }
+}
+
+###
+
+POST http://localhost:5000/updateChapter
+Content-Type: application/json
+Authorization : "eyJhbGciOiJIUzI1NiJ9.MUBnbWFpbC5jb20.o6oCmKs_kJ-syuFJIK0teQ23X3CcVc03XwyHnm0w8wM"
+
+{
+    "newStory" : {
+        "writerId" : "1",
+        "storyTitle" : "Lorem Ipsuma 4",
+        "title" : "Chapter 2.1",
+        "paras" : [{"type" : "text", "content" : "Para 2.1"}],
+        "chapterNumber" : "2"
+    }
+}
+
+###
+
+POST http://localhost:5000/getAllChapters
+Content-Type: application/json
+
+{
+    "title" : "Lorem Ipsuma 4"
+}
+
+###
+
+POST http://localhost:5000/getChapter
+Content-Type: application/json
+
+{
+    "storyTitle" : "Lorem Ipsuma 4",
+    "chapterNumber" : "1"
 }
 
 ###
@@ -64,5 +133,34 @@ POST http://localhost:5000/profileinfo
 Content-Type: application/json
 
 {
-    "profileInfo" : "shivakale123"
+    "profileInfo" : "abcd"
+}
+
+###
+
+POST http://localhost:5000/getstory
+Content-Type: application/json
+
+{
+    "storyTitle" : "1 A b c"
+}
+
+###
+
+PUT http://localhost:5000/checkliked
+Content-Type: application/json
+
+{
+    "storyId" : "123",
+    "userName" : "s"
+}
+
+###
+
+POST http://localhost:5000/test
+Content-Type: application/json
+Authorization : "eyJhbGciOiJIUzI1NiJ9.Mg.cy_DE3WjsfI8iBRj_GLAdUqZddicD1JljRNeVGZDzek"
+
+{
+    
 }

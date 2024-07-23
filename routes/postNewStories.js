@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const Story = require('../models/story');
+const User = require('../models/user');
 const authenticateToken = require('../middleware/auth');
+const auth = require('../middleware/checkLogin');
 
-router.post('/newstory', (req , res) => {
-    const {writerId , title, paras , titleImg} = req.body.newStory;
+router.post('/newstory', auth, async (req , res) => {
+    const {writerId , title, paras , titleImg, tags} = req.body.newStory;
     console.log(title);
     console.log(writerId);
     console.log(paras);
@@ -14,25 +16,32 @@ router.post('/newstory', (req , res) => {
         return res.status(422).json("No Title!");
     if(!paras)
         return res.status(422).json("No Content!");
+
+    if(req.user.username !== writerId)
+        return res.status(200).json({"message" : "Couldn't post"})
     
     Story.findOne({title : title})
         .then( savedTitle => {
             if(savedTitle)
                 return res.status(422).json("Title already exists");
             const story = new Story({
-                writerId : writerId,
-                title : title,
-                paras : paras,
-                titleImg : titleImg
+                writerId ,
+                title ,
+                paras ,
+                titleImg ,
+                tags ,
+                firstChapter : null
             })
             story.save()
                 .then(saved => {
-                    return res.status(200).json("The story has been saved");
+                    if(!saved)
+                        return res.status(200).json({message : 'Story not saved'})
+                    return res.status(200).json({message:"Story saved"});
                 })
         })
 })
 
-router.post('/mystories' , (req , res) => {
+router.post('/mystories' , auth, (req , res) => {
 
     const {writerId} = req.body;
     console.log(writerId);
